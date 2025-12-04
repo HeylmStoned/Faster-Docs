@@ -90,14 +90,17 @@ User                Factory              BondingCurve         DEXManager
 ## Fee Flow
 
 ```
-Trading Fee (1.2%)
+Trading Fee (1.2% total)
        │
        ▼
 ┌──────────────────┐
 │   FeeManager     │
 └──────┬───────────┘
        │
-       ├──► Creator (configurable, default 50%)
-       ├──► Bad Bunnz (configurable, default 25%)
-       └──► Buyback (configurable, default 25%)
+       ├──► Platform: 0.2% (fixed, always)
+       │
+       └──► Remaining 1.0% (configurable split):
+            ├──► Creator (default 50% = 0.5%)
+            ├──► Bad Bunnz (default 25% = 0.25%)
+            └──► Buyback (default 25% = 0.25%)
 ```

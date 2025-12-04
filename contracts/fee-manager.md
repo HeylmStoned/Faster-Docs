@@ -18,13 +18,14 @@ FeeManager handles:
 
 **Total Fee**: 1.2% per trade
 
-Split configurable per token (must sum to 100%):
+| Recipient | Amount | Configurable |
+|-----------|--------|--------------|
+| **Platform** | 0.2% (fixed) | No |
+| Creator | 0.5% (default) | Yes |
+| Bad Bunnz | 0.25% (default) | Yes |
+| Buyback | 0.25% (default) | Yes |
 
-| Recipient | Default | Description |
-|-----------|---------|-------------|
-| Creator | 50% | Token creator earnings |
-| Bad Bunnz | 25% | Platform NFT holders |
-| Buyback | 25% | Token buyback fund |
+The remaining 1.0% is split between Creator, Bad Bunnz, and Buyback (must sum to 100% of that 1.0%).
 
 ### Graduation Fee
 
