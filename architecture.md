@@ -175,8 +175,9 @@ Anyone calls collectFees(token)
       │
       ▼
 Auto-distributed:
-      ├──► 50% Creator rewards (claimable)
-      ├──► 30% Platform
-      ├──► 10% Bad Bunnz
-      └──► 10% Buyback
+      ├──► 20% Platform (fixed)
+      └──► 80% Adjustable (default):
+              ├──► 50% Creator rewards (claimable)
+              ├──► 25% Bad Bunnz
+              └──► 25% Buyback
 ```

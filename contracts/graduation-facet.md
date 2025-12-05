@@ -74,10 +74,11 @@ function collectFees(address token) external returns (uint256 amount0, uint256 a
 ```
 
 Anyone can call this. Fees are automatically distributed:
-- 50% Creator rewards (claimable via `claimCreatorRewards()`)
-- 30% Platform
-- 10% Bad Bunnz
-- 10% Buyback
+- **20% Platform** (fixed)
+- **80% Adjustable** (default split):
+  - 50% Creator rewards (claimable via `claimCreatorRewards()`)
+  - 25% Bad Bunnz
+  - 25% Buyback
 
 ---
 
