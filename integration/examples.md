@@ -13,7 +13,7 @@ const DIAMOND_ADDRESS = "0x8Ee43427E435253Bdc94d9Ab81daeC441C03EB2e";
 import DIAMOND_ABI from "./abis/Diamond.json";
 import ERC20_ABI from "./abis/ERC20.json"; // Standard ERC-20 for wrappers
 
-const provider = new ethers.JsonRpcProvider("https://carrot.megaeth.com/rpc");
+const provider = new ethers.JsonRpcProvider("https://timothy.megaeth.com/rpc");
 const signer = new ethers.Wallet(PRIVATE_KEY, provider);
 
 const diamond = new ethers.Contract(DIAMOND_ADDRESS, DIAMOND_ABI.abi, signer);

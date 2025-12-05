@@ -13,7 +13,7 @@ This guide covers how to integrate with the Faster Launchpad Diamond contract.
 ```javascript
 const networkConfig = {
     chainId: 6343,
-    rpcUrl: "https://carrot.megaeth.com/rpc",
+    rpcUrl: "https://timothy.megaeth.com/rpc",
     blockExplorer: "https://megaeth-testnet-v2.blockscout.com"
 };
 ```
@@ -44,7 +44,7 @@ npm install ethers
 import { ethers } from "ethers";
 
 // Connect to MegaETH testnet
-const provider = new ethers.JsonRpcProvider("https://carrot.megaeth.com/rpc");
+const provider = new ethers.JsonRpcProvider("https://timothy.megaeth.com/rpc");
 
 // With wallet
 const wallet = new ethers.Wallet(PRIVATE_KEY, provider);

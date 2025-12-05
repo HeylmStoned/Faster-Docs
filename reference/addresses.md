@@ -51,7 +51,7 @@
 
 ```
 Network Name: MegaETH Testnet v2
-RPC URL: https://carrot.megaeth.com/rpc
+RPC URL: https://timothy.megaeth.com/rpc
 Chain ID: 6343
 Currency Symbol: ETH
 Block Explorer: https://megaeth-testnet-v2.blockscout.com
@@ -62,7 +62,7 @@ Block Explorer: https://megaeth-testnet-v2.blockscout.com
 ```javascript
 networks: {
     megaethTestnet: {
-        url: "https://carrot.megaeth.com/rpc",
+        url: "https://timothy.megaeth.com/rpc",
         chainId: 6343,
         accounts: [PRIVATE_KEY]
     }
@@ -72,7 +72,7 @@ networks: {
 ### ethers.js
 
 ```javascript
-const provider = new ethers.JsonRpcProvider("https://carrot.megaeth.com/rpc");
+const provider = new ethers.JsonRpcProvider("https://timothy.megaeth.com/rpc");
 ```
 
 ---
