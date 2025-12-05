@@ -3,14 +3,15 @@
 * [Introduction](README.md)
 * [Architecture](architecture.md)
 
-## Contracts
+## Contracts (Diamond Facets)
 
-* [MemecoinFactory](contracts/factory.md)
-* [BondingCurve](contracts/bonding-curve.md)
-* [FeeManager](contracts/fee-manager.md)
-* [DEXManager](contracts/dex-manager.md)
-* [SecurityManager](contracts/security-manager.md)
-* [MemecoinToken](contracts/token.md)
+* [Diamond Overview](contracts/diamond.md)
+* [TokenFacet](contracts/token-facet.md)
+* [TradingFacet](contracts/trading-facet.md)
+* [GraduationFacet](contracts/graduation-facet.md)
+* [FeeFacet](contracts/fee-facet.md)
+* [SecurityFacet](contracts/security-facet.md)
+* [ERC-20 Wrappers](contracts/wrappers.md)
 
 ## Integration
 

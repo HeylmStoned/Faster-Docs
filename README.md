@@ -1,42 +1,64 @@
-# Memecoin Launchpad
+# Faster Launchpad
 
-Welcome to the **Memecoin Launchpad** documentation - a pump.fun-style token launchpad built on MegaETH.
+Welcome to the **Faster Launchpad** documentation - a gas-efficient memecoin launchpad built on MegaETH using the EIP-2535 Diamond Standard and ERC-6909 multi-token architecture.
 
-## What is Memecoin Launchpad?
+## What is Faster Launchpad?
 
-A decentralized platform where anyone can create and trade memecoins with:
+A gas-efficient memecoin launchpad built on the EIP-2535 Diamond Standard with ERC-6909 multi-tokens.
 
-- **Bonding Curve Trading** - Tokens start on an exponential bonding curve
-- **Auto-Graduation** - Tokens automatically graduate to Uniswap V3 when targets are met
-- **Fair Launch Options** - Anti-sniper and per-wallet limits
-- **Creator Rewards** - Earn fees from your token's trading activity
+## Quick Stats
 
-## How It Works
+| Parameter | Value |
+|-----------|-------|
+| **Total Supply** | 1,000,000 tokens (fixed) |
+| **Bonding Curve Sale** | 684,000 tokens (68.4%) |
+| **DEX Liquidity** | 316,000 tokens (31.6%) |
+| **Initial Price** | 0.00001 ETH |
+| **Final Price** | ~0.0000946 ETH (9.5x) |
+| **Graduation Target** | 30 ETH raised |
+| **Trading Fee** | 1.2% |
+| **Graduation Fee** | 0.1 ETH |
+| **Max Buy per TX** | 1 ETH |
+
+## Key Features
+
+- **ERC-6909 Multi-Token Standard** - All tokens exist within a single Diamond contract
+- **ERC-20 Wrappers** - Each token gets a compatible ERC-20 address via minimal proxy
+- **Bonding Curve Trading** - x^1.5 price curve with 1.2% trading fee
+- **Auto-Graduation** - Tokens graduate to Prism-Dex(UniV3) when 30 ETH raised
+- **90%+ Gas Savings** - ~50k gas to create a token vs 1-2M traditional
+- **Price Continuity** - DEX opens at same price as final bonding curve (~0.03% difference)
+
+## Architecture
 
 ```
-1. CREATE → Token minted, trading opens on bonding curve
-2. TRADE  → Users buy/sell, price increases exponentially  
-3. GRADUATE → At 30 ETH raised or 400k tokens sold, auto-lists on Uniswap V3
-4. DEX → Token trades freely, LP fees distributed
+┌─────────────────────────────────────────────────────────────┐
+│                      Diamond Proxy                          │
+│                 (Single Entry Point)                        │
+├─────────────────────────────────────────────────────────────┤
+│  TokenFacet    │  TradingFacet   │  GraduationFacet        │
+│  FeeFacet      │  SecurityFacet  │  AdminFacet             │
+│  ERC6909Facet  │  WrapperFacet   │  DiamondLoupe/Cut       │
+└─────────────────────────────────────────────────────────────┘
 ```
 
 ## Quick Links
 
 - [Architecture Overview](architecture.md)
 - [Getting Started](integration/getting-started.md)
-- [Contract Reference](contracts/factory.md)
+- [Contract Reference](contracts/diamond.md)
 - [Deployed Addresses](reference/addresses.md)
 
 ## Network
 
-**MegaETH Testnet v2** (Chain ID: 6343)
+**MegaETH Testnet v2** (Chain ID: 6343)  
+**RPC**: https://timothy.megaeth.com/rpc  
+**Block Explorer**: [megaeth-testnet-v2.blockscout.com](https://megaeth-testnet-v2.blockscout.com)
 
 | Contract | Address |
 |----------|---------|
-| MemecoinFactory | `0x855EF543a8d611Ee76724C2E4051E7db4947158F` |
-| BondingCurve | `0xb60c5650DEDE1a0d6E558D2561Ba4df60CF29F42` |
-| FeeManager | `0x194c622e62FA1C91A8A678A898F4b10E138124cD` |
-| DEXManager | `0x98e57d776226cE97C0c850E2Af33669aa9F99416` |
-| SecurityManager | `0xF9e0094Ac5379071970533897Af8f274F8ce2E1c` |
-
-**Block Explorer**: [megaeth-testnet-v2.blockscout.com](https://megaeth-testnet-v2.blockscout.com)
+| Diamond (Main Entry) | [`0x8Ee43427E435253Bdc94d9Ab81daeC441C03EB2e`](https://megaeth-testnet-v2.blockscout.com/address/0x8Ee43427E435253Bdc94d9Ab81daeC441C03EB2e) |
+| TokenFacet | [`0x6799c57642E9F5813dBE2B01c27ce024cb417f87`](https://megaeth-testnet-v2.blockscout.com/address/0x6799c57642E9F5813dBE2B01c27ce024cb417f87) |
+| TradingFacet | [`0xA52978d657dE175fD4F537f5d3bfe166c40E47d8`](https://megaeth-testnet-v2.blockscout.com/address/0xA52978d657dE175fD4F537f5d3bfe166c40E47d8) |
+| GraduationFacet | [`0xc4a4771d91f6ce5732b287c21F60b2B193fdF0CE`](https://megaeth-testnet-v2.blockscout.com/address/0xc4a4771d91f6ce5732b287c21F60b2B193fdF0CE) |
+| FeeFacet | [`0xE75A6cdDc836f4dB8aA1794B05e6545b89c774Bb`](https://megaeth-testnet-v2.blockscout.com/address/0xE75A6cdDc836f4dB8aA1794B05e6545b89c774Bb) |
