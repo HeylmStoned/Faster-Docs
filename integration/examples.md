@@ -70,9 +70,7 @@ async function createBasicToken() {
     
     console.log("Token ID:", tokenId.toString());
     console.log("ERC-20 Wrapper:", wrapper);
-    
-    // IMPORTANT: Admin must initialize trading
-    await diamond.initializeToken(wrapper);
+    // Trading opens automatically after creation
     
     return { tokenId, wrapper };
 }

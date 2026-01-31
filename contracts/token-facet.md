@@ -78,7 +78,7 @@ function createToken(
 
 **Gas Cost**: ~50,000 gas (vs ~1-2M for traditional ERC-20 deployment)
 
-**Note:** After creation, admin must call `initializeToken(wrapper)` on TradingFacet to open trading.
+**Note:** Trading is opened automatically after creation (no separate `initializeToken` call).
 
 ---
 

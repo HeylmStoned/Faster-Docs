@@ -95,8 +95,7 @@ When a user creates a token:
 2. Diamond mints **1 million ERC-6909 tokens** internally (just storage writes, very cheap)
 3. ERC-20 wrapper deployed via WrapperFacet (`wrap6909`), initial supply deposited
 4. All 1M tokens deposited to wrapper, held by Diamond for bonding curve sale
-5. Admin must call `initializeToken(wrapper)` to open trading
-6. Token is now live and tradeable
+5. Trading opens automatically; token is live and tradeable
 
 ### Phase 2: Bonding Curve Trading
 

@@ -115,9 +115,7 @@ const event = receipt.logs.find(log => {
 const parsed = diamond.interface.parseLog(event);
 console.log("Token ID:", parsed.args.id ?? parsed.args[0]);
 console.log("ERC-20 Wrapper:", parsed.args.wrapper ?? parsed.args[5]);
-
-// IMPORTANT: Admin must initialize trading
-await diamond.initializeToken(parsed.args.wrapper ?? parsed.args[5]);
+// Trading opens automatically; no further call needed
 ```
 
 ### 2. Buy Tokens
