@@ -2,9 +2,9 @@
 
 The main entry point for all launchpad operations. Built on EIP-2535 Diamond Standard.
 
-**Address**: [`0x8Ee43427E435253Bdc94d9Ab81daeC441C03EB2e`](https://megaeth-testnet-v2.blockscout.com/address/0x8Ee43427E435253Bdc94d9Ab81daeC441C03EB2e)
+**Address**: [`0xabFf1341b5aF1D71394D44ad84E07d02ab3fbd4B`](https://mega.etherscan.io/address/0xabFf1341b5aF1D71394D44ad84E07d02ab3fbd4B)
 
-**Network**: MegaETH Testnet v2 (Chain ID: 6343)
+**Network**: MegaETH Mainnet (Chain ID: 4326)
 
 ## Overview
 
@@ -28,16 +28,16 @@ The Diamond contract is a proxy that delegates calls to specialized facets. All 
 
 | Facet | Address |
 |-------|---------|
-| DiamondCutFacet | [`0xD64C6adc320FF3D0B7d09F6770e3095Ed7bF1022`](https://megaeth-testnet-v2.blockscout.com/address/0xD64C6adc320FF3D0B7d09F6770e3095Ed7bF1022) |
-| DiamondLoupeFacet | [`0x0edE8cCe0F0065AB48a6c8aa1108e6763a6D6453`](https://megaeth-testnet-v2.blockscout.com/address/0x0edE8cCe0F0065AB48a6c8aa1108e6763a6D6453) |
-| TokenFacet | [`0x6799c57642E9F5813dBE2B01c27ce024cb417f87`](https://megaeth-testnet-v2.blockscout.com/address/0x6799c57642E9F5813dBE2B01c27ce024cb417f87) |
-| TradingFacet | [`0xA52978d657dE175fD4F537f5d3bfe166c40E47d8`](https://megaeth-testnet-v2.blockscout.com/address/0xA52978d657dE175fD4F537f5d3bfe166c40E47d8) |
-| GraduationFacet | [`0xc4a4771d91f6ce5732b287c21F60b2B193fdF0CE`](https://megaeth-testnet-v2.blockscout.com/address/0xc4a4771d91f6ce5732b287c21F60b2B193fdF0CE) |
-| FeeFacet | [`0xE75A6cdDc836f4dB8aA1794B05e6545b89c774Bb`](https://megaeth-testnet-v2.blockscout.com/address/0xE75A6cdDc836f4dB8aA1794B05e6545b89c774Bb) |
-| SecurityFacet | [`0x73c1eCcc3eD0F14A720069e0B11fe9D6492e0A17`](https://megaeth-testnet-v2.blockscout.com/address/0x73c1eCcc3eD0F14A720069e0B11fe9D6492e0A17) |
-| AdminFacet | [`0xC1Eedf19d43D9e2EB462d982475Ac765c072d855`](https://megaeth-testnet-v2.blockscout.com/address/0xC1Eedf19d43D9e2EB462d982475Ac765c072d855) |
-| ERC6909Facet | [`0x2976fD1C498070b6f7024Dc7807Ea788b8c3F67D`](https://megaeth-testnet-v2.blockscout.com/address/0x2976fD1C498070b6f7024Dc7807Ea788b8c3F67D) |
-| WrapperFacet | [`0x99Ac8ccD4ed5F665330E7d5B49DB83408E8ea0Db`](https://megaeth-testnet-v2.blockscout.com/address/0x99Ac8ccD4ed5F665330E7d5B49DB83408E8ea0Db) |
+| DiamondCutFacet | [`0x8761b74ef07feC5a5c720cAa6e349fAFa25071b2`](https://mega.etherscan.io/address/0x8761b74ef07feC5a5c720cAa6e349fAFa25071b2) |
+| DiamondLoupeFacet | [`0x43B639a153e8F3569151eACb9e9E9570d1b03c1D`](https://mega.etherscan.io/address/0x43B639a153e8F3569151eACb9e9E9570d1b03c1D) |
+| TokenFacet | [`0xAA2b90D09db6a71c1022d9866E340B5E1481b8Fe`](https://mega.etherscan.io/address/0xAA2b90D09db6a71c1022d9866E340B5E1481b8Fe) |
+| TradingFacet | [`0x505a94d251A9cA13b2d98C62121Ca886dfCE2DdB`](https://mega.etherscan.io/address/0x505a94d251A9cA13b2d98C62121Ca886dfCE2DdB) |
+| GraduationFacet | [`0xe0955cB7Eb76aa7F5a070B8b2cE60fF93000821C`](https://mega.etherscan.io/address/0xe0955cB7Eb76aa7F5a070B8b2cE60fF93000821C) |
+| FeeFacet | [`0x742c3b5E9201b18CbC370e2D069c25D68221D7A4`](https://mega.etherscan.io/address/0x742c3b5E9201b18CbC370e2D069c25D68221D7A4) |
+| SecurityFacet | [`0x55681cfD658B4201C0079A242D3675deD847A0B9`](https://mega.etherscan.io/address/0x55681cfD658B4201C0079A242D3675deD847A0B9) |
+| AdminFacet | [`0x287f524fBC260c67bDCC05bed0cad8ca88F032A0`](https://mega.etherscan.io/address/0x287f524fBC260c67bDCC05bed0cad8ca88F032A0) |
+| ERC6909Facet | [`0x28939062EE09e8B64120E0ED9cC13236C1Fc69aD`](https://mega.etherscan.io/address/0x28939062EE09e8B64120E0ED9cC13236C1Fc69aD) |
+| WrapperFacet | [`0x13A3fe336c93662D4902183F3D5D11af4483C09E`](https://mega.etherscan.io/address/0x13A3fe336c93662D4902183F3D5D11af4483C09E) |
 
 ## Key Constants
 

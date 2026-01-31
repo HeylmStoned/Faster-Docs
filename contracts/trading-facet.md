@@ -2,7 +2,7 @@
 
 Handles bonding curve trading with an x^1.5 price curve.
 
-**Facet Address**: [`0xA52978d657dE175fD4F537f5d3bfe166c40E47d8`](https://megaeth-testnet-v2.blockscout.com/address/0xA52978d657dE175fD4F537f5d3bfe166c40E47d8)
+**Facet Address**: [`0x505a94d251A9cA13b2d98C62121Ca886dfCE2DdB`](https://mega.etherscan.io/address/0x505a94d251A9cA13b2d98C62121Ca886dfCE2DdB)
 
 ## Overview
 
@@ -12,6 +12,8 @@ TradingFacet handles:
 - Price calculations
 - Sell enable/disable per token
 - Fair launch fixed-price mode
+
+**All functions that take a `token` parameter expect the ERC-20 wrapper address** (from `TokenCreated`). Use that address like any ERC-20 contract for trading and queries.
 
 ## Bonding Curve Parameters
 
@@ -172,8 +174,7 @@ event TokenBought(
     address indexed token,
     address indexed buyer,
     uint256 amount,
-    uint256 price,
-    uint256 fee
+    uint256 price
 );
 ```
 
@@ -184,15 +185,14 @@ event TokenSold(
     address indexed token,
     address indexed seller,
     uint256 amount,
-    uint256 price,
-    uint256 fee
+    uint256 price
 );
 ```
 
-### SellsEnabledChanged
+### SellsEnabledUpdated
 
 ```solidity
-event SellsEnabledChanged(
+event SellsEnabledUpdated(
     address indexed token,
     bool enabled
 );

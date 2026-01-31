@@ -54,6 +54,48 @@ event OperatorSet(
 );
 ```
 
+### TokenPaused (by token id)
+
+```solidity
+event TokenPaused(
+    uint256 indexed id,
+    bool paused
+);
+```
+
+### TokenVerified
+
+```solidity
+event TokenVerified(
+    uint256 indexed id,
+    bool verified
+);
+```
+
+### MetadataUpdated
+
+```solidity
+event MetadataUpdated(
+    uint256 indexed id,
+    string description,
+    string imageUrl,
+    string website,
+    string twitter,
+    string telegram
+);
+```
+
+### TradeRecorded
+
+```solidity
+event TradeRecorded(
+    uint256 indexed id,
+    uint256 amount,
+    uint256 price,
+    address buyer
+);
+```
+
 ---
 
 ## TradingFacet
@@ -67,8 +109,7 @@ event TokenBought(
     address indexed token,
     address indexed buyer,
     uint256 amount,
-    uint256 price,
-    uint256 fee
+    uint256 price
 );
 ```
 
@@ -81,31 +122,42 @@ event TokenSold(
     address indexed token,
     address indexed seller,
     uint256 amount,
-    uint256 price,
-    uint256 fee
+    uint256 price
 );
 ```
 
-### SellsEnabledChanged
+### SellsEnabledUpdated
 
 Emitted when sells are enabled/disabled for a token.
 
 ```solidity
-event SellsEnabledChanged(
+event SellsEnabledUpdated(
     address indexed token,
     bool enabled
 );
 ```
 
-### TradingClosed
+### TokenTradingDataUpdated
 
-Emitted when bonding curve trading closes (graduation triggered).
+Emitted when bonding curve trading state changes (e.g. graduation triggered).
 
 ```solidity
-event TradingClosed(
+event TokenTradingDataUpdated(
     address indexed token,
     uint256 totalSold,
-    uint256 totalRaised
+    uint256 totalRaised,
+    bool isOpen
+);
+```
+
+### GraduationFailed
+
+Emitted when auto-graduation fails.
+
+```solidity
+event GraduationFailed(
+    address indexed token,
+    string reason
 );
 ```
 
@@ -115,26 +167,13 @@ event TradingClosed(
 
 ### TokenGraduated
 
-Emitted when a token graduates to Prism-Dex(UniV3).
+Emitted when a token graduates to Uniswap V3.
 
 ```solidity
 event TokenGraduated(
     address indexed token,
     address indexed pool,
-    uint256 positionId,
-    uint256 tokenAmount,
-    uint256 ethAmount
-);
-```
-
-### PoolCreated
-
-Emitted when a Prism-Dex(UniV3) pool is created.
-
-```solidity
-event PoolCreated(
-    address indexed token,
-    address indexed pool
+    uint256 positionId
 );
 ```
 
@@ -145,20 +184,41 @@ Emitted when an LP position is minted.
 ```solidity
 event PositionCreated(
     address indexed token,
-    uint256 positionId,
-    uint128 liquidity
+    uint256 positionId
+);
+```
+
+### PoolCreated
+
+Emitted when a Uniswap V3 pool is created.
+
+```solidity
+event PoolCreated(
+    address indexed token,
+    address indexed pool
 );
 ```
 
 ### FeesCollected
 
-Emitted when LP fees are collected from Prism-Dex(UniV3).
+Emitted when LP fees are collected from Uniswap V3.
 
 ```solidity
 event FeesCollected(
     address indexed token,
     uint256 amount0,
     uint256 amount1
+);
+```
+
+### TokensBurned
+
+Emitted when excess tokens are burned during graduation.
+
+```solidity
+event TokensBurned(
+    address indexed token,
+    uint256 amount
 );
 ```
 
@@ -219,9 +279,39 @@ event GraduationFeePaid(
 );
 ```
 
+### GraduationFeesWithdrawn
+
+```solidity
+event GraduationFeesWithdrawn(uint256 amount);
+```
+
+### FeeConfigSet
+
+```solidity
+event FeeConfigSet(
+    address indexed token,
+    uint256 creatorFee,
+    uint256 badBunnzFee,
+    uint256 buybackFee
+);
+```
+
+### DEXFeeConfigSet
+
+```solidity
+event DEXFeeConfigSet(
+    address indexed token,
+    uint256 creatorFee,
+    uint256 badBunnzFee,
+    uint256 buybackFee
+);
+```
+
 ---
 
 ## SecurityFacet
+
+(Also see TokenFacet/ERC6909Facet for `TokenPaused(uint256 id, bool paused)`.)
 
 ### SniperProtectionEnabled
 
@@ -238,12 +328,11 @@ event SniperProtectionEnabled(
 event FairLaunchEnabled(
     address indexed token,
     uint256 duration,
-    uint256 maxPerWallet,
-    uint256 fixedPrice
+    uint256 maxPerWallet
 );
 ```
 
-### TokenPaused
+### TokenPaused (SecurityFacet – by wrapper address)
 
 ```solidity
 event TokenPaused(
@@ -252,11 +341,13 @@ event TokenPaused(
 );
 ```
 
-### SecurityDisabled
+### SecurityConfigUpdated
 
 ```solidity
-event SecurityDisabled(
-    address indexed token
+event SecurityConfigUpdated(
+    address indexed token,
+    bool sniperProtection,
+    bool fairLaunch
 );
 ```
 
@@ -277,18 +368,40 @@ event OwnershipTransferred(
 
 ```solidity
 event FeeWalletsUpdated(
-    address platform,
-    address buyback
+    address platformWallet,
+    address buybackWallet
 );
 ```
 
-### EmergencyWithdraw
+### AdminUpdated
 
 ```solidity
-event EmergencyWithdraw(
-    address indexed token,
-    uint256 amount
+event AdminUpdated(
+    address indexed admin,
+    bool enabled
 );
+```
+
+---
+
+## WrapperFacet
+
+### WrapperCreated
+
+Emitted when an ERC-20 wrapper is deployed.
+
+```solidity
+event WrapperCreated(
+    address indexed token,
+    uint256 indexed tokenId,
+    address wrapper
+);
+```
+
+### ImplementationSet
+
+```solidity
+event ImplementationSet(address implementation);
 ```
 
 ---
@@ -322,28 +435,27 @@ event Approval(
 ## Listening to Events (JavaScript)
 
 ```javascript
-// Listen for new tokens
-diamond.on("TokenCreated", (tokenId, wrapper, creator, name, symbol) => {
+// Listen for new tokens (id, creator, name, symbol, totalSupply, wrapper)
+diamond.on("TokenCreated", (id, creator, name, symbol, totalSupply, wrapper) => {
     console.log(`New token: ${name} (${symbol})`);
     console.log(`  Wrapper: ${wrapper}`);
     console.log(`  Creator: ${creator}`);
 });
 
 // Listen for trades
-diamond.on("TokenBought", (token, buyer, amount, price, fee) => {
+diamond.on("TokenBought", (token, buyer, amount, price) => {
     console.log(`Buy: ${ethers.formatEther(amount)} tokens`);
     console.log(`  Price: ${ethers.formatEther(price)} ETH`);
 });
 
-diamond.on("TokenSold", (token, seller, amount, price, fee) => {
+diamond.on("TokenSold", (token, seller, amount, price) => {
     console.log(`Sell: ${ethers.formatEther(amount)} tokens`);
 });
 
 // Listen for graduations
-diamond.on("TokenGraduated", (token, pool, positionId, tokenAmount, ethAmount) => {
-    console.log(`Token graduated to Prism-Dex(UniV3)!`);
+diamond.on("TokenGraduated", (token, pool, positionId) => {
+    console.log(`Token graduated to Uniswap V3!`);
     console.log(`  Pool: ${pool}`);
-    console.log(`  Liquidity: ${ethers.formatEther(tokenAmount)} tokens + ${ethers.formatEther(ethAmount)} ETH`);
 });
 
 // Listen for reward claims

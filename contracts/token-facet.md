@@ -2,7 +2,7 @@
 
 Creates ERC-6909 multi-tokens with metadata and fee configuration. Each token gets a unique ID within the Diamond and an ERC-20 wrapper for DeFi compatibility.
 
-**Facet Address**: [`0x6799c57642E9F5813dBE2B01c27ce024cb417f87`](https://megaeth-testnet-v2.blockscout.com/address/0x6799c57642E9F5813dBE2B01c27ce024cb417f87)
+**Facet Address**: [`0xAA2b90D09db6a71c1022d9866E340B5E1481b8Fe`](https://mega.etherscan.io/address/0xAA2b90D09db6a71c1022d9866E340B5E1481b8Fe)
 
 ## Overview
 
@@ -82,62 +82,52 @@ function createToken(
 
 ---
 
-### getTokenMetadata
+### getTokenData
 
-Get token metadata by wrapper address.
+Get full token data by ERC-6909 token ID. Returns a struct with metadata and state.
 
 ```solidity
-function getTokenMetadata(address wrapper) external view returns (
-    string memory name,
-    string memory symbol,
-    string memory description,
-    string memory imageUrl,
-    string memory website,
-    string memory twitter,
-    string memory telegram,
-    address creator,
-    uint256 createdAt
-)
+function getTokenData(uint256 id) external view returns (LibToken.TokenData memory data)
 ```
+
+Struct fields: `name`, `symbol`, `description`, `imageUrl`, `website`, `twitter`, `telegram`, `creator`, `totalSupply`, `createdAt`, `lastTradeTime`, `totalTrades`, `totalVolume`, `uniqueBuyers`, `isPaused`, `isVerified`, `graduated`, `poolAddress`.
 
 ---
 
-### getTokenId
-
-Get the ERC-6909 token ID for a wrapper address.
-
-```solidity
-function getTokenId(address wrapper) external view returns (uint256)
-```
-
----
-
-### getWrapper
+### getTokenWrapper
 
 Get the ERC-20 wrapper address for a token ID.
 
 ```solidity
-function getWrapper(uint256 tokenId) external view returns (address)
+function getTokenWrapper(uint256 id) external view returns (address wrapper)
+```
+
+**Note:** There is no on-chain `getTokenId(wrapper)`. Store the token `id` from the `TokenCreated` event at creation time, or iterate `tokenCount()` and `getTokenWrapper(i)` to find the id for a wrapper. For trading and most integrations, use the **wrapper address** as the token (e.g. `buyWithETH(wrapper, ...)`, `getTokenStats(wrapper)`); you only need the numeric id for `getTokenData(id)` and ERC-6909 calls.
+
+---
+
+### tokenCount
+
+```solidity
+function tokenCount() external view returns (uint256 count)
 ```
 
 ---
 
-### getAllTokens
-
-Get all token wrapper addresses.
+### creator / createdAt
 
 ```solidity
-function getAllTokens() external view returns (address[] memory)
+function creator(uint256 id) external view returns (address creatorAddress)
+function createdAt(uint256 id) external view returns (uint256)
 ```
 
 ---
 
-### getTokensByCreator
-
-Get all tokens created by an address.
+### name / symbol (by id)
 
 ```solidity
-function getTokensByCreator(address creator) external view returns (address[] memory)
+function name(uint256 id) external view returns (string memory tokenName)
+function symbol(uint256 id) external view returns (string memory tokenSymbol)
 ```
 
 ---
@@ -187,11 +177,12 @@ function setOperator(address operator, bool approved) external returns (bool)
 
 ```solidity
 event TokenCreated(
-    uint256 indexed tokenId,
-    address indexed wrapper,
+    uint256 indexed id,
     address indexed creator,
     string name,
-    string symbol
+    string symbol,
+    uint256 totalSupply,
+    address wrapper
 );
 ```
 
@@ -199,6 +190,7 @@ event TokenCreated(
 
 ```solidity
 event Transfer(
+    address caller,
     address indexed sender,
     address indexed receiver,
     uint256 indexed id,

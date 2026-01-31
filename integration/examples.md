@@ -7,16 +7,16 @@ Complete integration examples for the Faster Launchpad Diamond contract.
 ```javascript
 import { ethers } from "ethers";
 
-const DIAMOND_ADDRESS = "0x8Ee43427E435253Bdc94d9Ab81daeC441C03EB2e";
+const DIAMOND_ADDRESS = "0xabFf1341b5aF1D71394D44ad84E07d02ab3fbd4B";
 
-// Diamond ABI combines all facet ABIs
+// ABIs from this repo (abis/)
 import DIAMOND_ABI from "./abis/Diamond.json";
 import ERC20_ABI from "./abis/ERC20.json"; // Standard ERC-20 for wrappers
 
-const provider = new ethers.JsonRpcProvider("https://timothy.megaeth.com/rpc");
+const provider = new ethers.JsonRpcProvider("https://mainnet.megaeth.com/rpc");
 const signer = new ethers.Wallet(PRIVATE_KEY, provider);
 
-const diamond = new ethers.Contract(DIAMOND_ADDRESS, DIAMOND_ABI.abi, signer);
+const diamond = new ethers.Contract(DIAMOND_ADDRESS, DIAMOND_ABI, signer);
 ```
 
 ---
@@ -63,9 +63,10 @@ async function createBasicToken() {
         } catch { return false; }
     });
     
+    // TokenCreated(id, creator, name, symbol, totalSupply, wrapper)
     const parsed = diamond.interface.parseLog(event);
-    const tokenId = parsed.args[0];
-    const wrapper = parsed.args[5];
+    const tokenId = parsed.args.id ?? parsed.args[0];
+    const wrapper = parsed.args.wrapper ?? parsed.args[5];
     
     console.log("Token ID:", tokenId.toString());
     console.log("ERC-20 Wrapper:", wrapper);
@@ -243,21 +244,23 @@ async function getTokenStatus(wrapperAddress) {
 
 ### Get Full Token Info
 
+Requires token `id` (from TokenCreated event). Use `getTokenData(id)` for full metadata.
+
 ```javascript
-async function getFullTokenInfo(wrapperAddress) {
-    const [metadata, stats, graduated, sellsEnabled] = await Promise.all([
-        diamond.getTokenMetadata(wrapperAddress),
+async function getFullTokenInfo(tokenId, wrapperAddress) {
+    const [data, stats, graduated, sellsEnabled] = await Promise.all([
+        diamond.getTokenData(tokenId),
         diamond.getTokenStats(wrapperAddress),
         diamond.isTokenGraduated(wrapperAddress),
         diamond.areSellsEnabled(wrapperAddress)
     ]);
     
     return {
-        name: metadata.name,
-        symbol: metadata.symbol,
-        description: metadata.description,
-        creator: metadata.creator,
-        createdAt: new Date(Number(metadata.createdAt) * 1000),
+        name: data.name,
+        symbol: data.symbol,
+        description: data.description,
+        creator: data.creator,
+        createdAt: new Date(Number(data.createdAt) * 1000),
         sold: ethers.formatEther(stats.totalSold),
         raised: ethers.formatEther(stats.totalRaised),
         currentPrice: ethers.formatEther(stats.currentPrice),
@@ -276,7 +279,7 @@ async function checkGraduation(wrapperAddress) {
     
     if (graduated) {
         const status = await diamond.getGraduationStatus(wrapperAddress);
-        console.log("=== Graduated to Prism-Dex(UniV3) ===");
+        console.log("=== Graduated to Uniswap V3 ===");
         console.log("Pool:", status.pool);
         console.log("Position ID:", status.positionId.toString());
         console.log("Liquidity:", status.liquidity.toString());
@@ -354,15 +357,18 @@ async function collectLPFees(wrapperAddress) {
 
 ## List All Tokens
 
+There is no `getAllTokens()`. Use `tokenCount()` and `getTokenWrapper(i)` to enumerate, or index `TokenCreated` events.
+
 ```javascript
-async function getAllTokens() {
-    const tokens = await diamond.getAllTokens();
+async function listAllTokens() {
+    const count = await diamond.tokenCount();
+    const tokens = [];
     
-    console.log("Total tokens:", tokens.length);
-    
-    for (const wrapperAddress of tokens) {
-        const metadata = await diamond.getTokenMetadata(wrapperAddress);
-        console.log(`${metadata.name} (${metadata.symbol}): ${wrapperAddress}`);
+    for (let i = 1n; i <= count; i++) {
+        const wrapper = await diamond.getTokenWrapper(i);
+        const data = await diamond.getTokenData(i);
+        tokens.push({ id: i, wrapper, name: data.name, symbol: data.symbol });
+        console.log(`${data.name} (${data.symbol}): ${wrapper}`);
     }
     
     return tokens;
@@ -374,25 +380,25 @@ async function getAllTokens() {
 ## Monitor Events
 
 ```javascript
-// Listen for new tokens
-diamond.on("TokenCreated", (tokenId, wrapper, creator, name, symbol) => {
+// Listen for new tokens (id, creator, name, symbol, totalSupply, wrapper)
+diamond.on("TokenCreated", (id, creator, name, symbol, totalSupply, wrapper) => {
     console.log(`New token: ${name} (${symbol})`);
     console.log(`  Wrapper: ${wrapper}`);
     console.log(`  Creator: ${creator}`);
 });
 
-// Listen for trades
-diamond.on("TokenBought", (token, buyer, amount, price, fee) => {
+// Listen for trades (token, buyer/seller, amount, price - no fee in event)
+diamond.on("TokenBought", (token, buyer, amount, price) => {
     console.log(`Buy: ${ethers.formatEther(amount)} tokens for ${ethers.formatEther(price)} ETH`);
 });
 
-diamond.on("TokenSold", (token, seller, amount, price, fee) => {
+diamond.on("TokenSold", (token, seller, amount, price) => {
     console.log(`Sell: ${ethers.formatEther(amount)} tokens for ${ethers.formatEther(price)} ETH`);
 });
 
-// Listen for graduations
-diamond.on("TokenGraduated", (token, pool, positionId, tokenAmount, ethAmount) => {
-    console.log(`Token graduated to Prism-Dex(UniV3)!`);
+// Listen for graduations (token, pool, positionId)
+diamond.on("TokenGraduated", (token, pool, positionId) => {
+    console.log(`Token graduated to Uniswap V3!`);
     console.log(`  Token: ${token}`);
     console.log(`  Pool: ${pool}`);
 });
@@ -419,12 +425,12 @@ async function safeBuy(wrapperAddress, ethAmount) {
         await tx.wait();
     } catch (error) {
         if (error.message.includes("Trading is closed")) {
-            console.log("Token has graduated to Prism-Dex(UniV3)");
+            console.log("Token has graduated to Uniswap V3");
         } else if (error.message.includes("Output below minimum")) {
             console.log("Slippage too high, try again");
         } else if (error.message.includes("Exceeds max buy amount")) {
             console.log("Max 1 ETH per transaction");
-        } else if (error.message.includes("Token is paused")) {
+        } else if (error.message.includes("Token is paused") || error.message.includes("TokenAlreadyPaused")) {
             console.log("Token trading is paused");
         } else {
             throw error;
@@ -437,21 +443,22 @@ async function safeBuy(wrapperAddress, ethAmount) {
 
 ## ERC-6909 Direct Access
 
-For advanced use cases, you can interact with ERC-6909 directly:
+For advanced use cases, you can interact with ERC-6909 directly. Use the token `id` from the `TokenCreated` event (there is no on-chain `getTokenId(wrapper)`).
 
 ```javascript
-// Get ERC-6909 token ID from wrapper
-const tokenId = await diamond.getTokenId(wrapperAddress);
+// tokenId from TokenCreated event at creation time
+const tokenId = 1n; // or stored from creation
 
 // Check ERC-6909 balance
 const balance = await diamond.balanceOf(signer.address, tokenId);
 console.log("ERC-6909 Balance:", ethers.formatEther(balance));
 
-// Transfer via ERC-6909
+// Transfer via ERC-6909 (receiver, id, amount)
 const tx = await diamond.transfer(recipientAddress, tokenId, amount);
 await tx.wait();
 
 // Or use the ERC-20 wrapper (same result)
+const wrapperAddress = await diamond.getTokenWrapper(tokenId);
 const wrapper = new ethers.Contract(wrapperAddress, ERC20_ABI, signer);
 const wrapperBalance = await wrapper.balanceOf(signer.address);
 console.log("ERC-20 Balance:", ethers.formatEther(wrapperBalance));

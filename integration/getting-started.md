@@ -6,15 +6,15 @@ This guide covers how to integrate with the Faster Launchpad Diamond contract.
 
 - Node.js 16+
 - ethers.js v6
-- Access to MegaETH testnet
+- Access to MegaETH Mainnet
 
 ## Network Configuration
 
 ```javascript
 const networkConfig = {
-    chainId: 6343,
-    rpcUrl: "https://timothy.megaeth.com/rpc",
-    blockExplorer: "https://megaeth-testnet-v2.blockscout.com"
+    chainId: 4326,
+    rpcUrl: "https://mainnet.megaeth.com/rpc",
+    blockExplorer: "https://mega.etherscan.io"
 };
 ```
 
@@ -23,11 +23,11 @@ const networkConfig = {
 ```javascript
 const addresses = {
     // Main entry point - all calls go through Diamond
-    diamond: "0x8Ee43427E435253Bdc94d9Ab81daeC441C03EB2e",
+    diamond: "0xabFf1341b5aF1D71394D44ad84E07d02ab3fbd4B",
     
-    // External dependencies
-    prismDexFactory: "0x94996d371622304f2eb85df1eb7f328f7b317c3e",
-    positionManager: "0x1279f3cbf01ad4f0cfa93f233464581f4051033a",
+    // External dependencies (Uniswap V3)
+    uniswapV3Factory: "0xef349aa6cc5e87559e716ac293845a48cadf30d5",
+    positionManager: "0x9feaf944c518164d5d0c45f28255758acff8e987",
     weth: "0x4200000000000000000000000000000000000006"
 };
 ```
@@ -43,8 +43,8 @@ npm install ethers
 ```javascript
 import { ethers } from "ethers";
 
-// Connect to MegaETH testnet
-const provider = new ethers.JsonRpcProvider("https://timothy.megaeth.com/rpc");
+// Connect to MegaETH Mainnet
+const provider = new ethers.JsonRpcProvider("https://mainnet.megaeth.com/rpc");
 
 // With wallet
 const wallet = new ethers.Wallet(PRIVATE_KEY, provider);
@@ -55,13 +55,21 @@ const diamond = new ethers.Contract(addresses.diamond, DIAMOND_ABI, wallet);
 
 ## ABIs
 
-The Diamond ABI combines all facet ABIs. Available in the repository at `/abis/`:
-- `Diamond.json` - Combined ABI for all facets
-- `TokenFacet.json`
-- `TradingFacet.json`
-- `GraduationFacet.json`
-- `FeeFacet.json`
-- `SecurityFacet.json`
+ABIs are in this repo under **`abis/`**: use `abis/Diamond.json` for the Diamond (all launchpad functions) and `abis/ERC20.json` for wrapper tokens (balance, transfer, approve).
+
+## Wrapper address = your token address
+
+Each launchpad token has a **wrapper** address (returned in `TokenCreated`). **Use this address exactly like a standard ERC-20 token:**
+
+| Use case | What to do |
+|----------|------------|
+| Add to wallet | Use the wrapper address as the token contract address |
+| Check balance | `wrapper.balanceOf(user)` (standard ERC-20) |
+| Transfer | `wrapper.transfer(to, amount)` or `wrapper.transferFrom(from, to, amount)` |
+| Approve (e.g. for DEX) | `wrapper.approve(spender, amount)` |
+| Trade on Uniswap V3 | Use wrapper address as the token in the pair |
+
+For **launchpad-specific** actions (buy/sell on bonding curve, graduation, fees, rewards), call the **Diamond** with the wrapper address as the `token` parameter. See [ERC-20 Wrappers](../contracts/wrappers.md) for the full picture.
 
 ## Quick Start
 
@@ -103,12 +111,13 @@ const event = receipt.logs.find(log => {
         return diamond.interface.parseLog(log)?.name === "TokenCreated";
     } catch { return false; }
 });
+// TokenCreated(id, creator, name, symbol, totalSupply, wrapper)
 const parsed = diamond.interface.parseLog(event);
-console.log("Token ID:", parsed.args[0]);
-console.log("ERC-20 Wrapper:", parsed.args[5]);
+console.log("Token ID:", parsed.args.id ?? parsed.args[0]);
+console.log("ERC-20 Wrapper:", parsed.args.wrapper ?? parsed.args[5]);
 
 // IMPORTANT: Admin must initialize trading
-await diamond.initializeToken(parsed.args[5]);
+await diamond.initializeToken(parsed.args.wrapper ?? parsed.args[5]);
 ```
 
 ### 2. Buy Tokens
@@ -120,16 +129,18 @@ const estimate = await diamond.estimateTokensForETH(
     ethers.parseEther("0.1")
 );
 
-// Buy with 10% slippage tolerance
-const minTokens = estimate * 90n / 100n;
+// Buy with 10% slippage tolerance (buyWithETH(token, buyer, minTokensOut))
+const minTokensOut = estimate * 90n / 100n;
 
-const tx = await diamond.buyWithETH(wrapperAddress, wallet.address, minTokens, {
+const tx = await diamond.buyWithETH(wrapperAddress, wallet.address, minTokensOut, {
     value: ethers.parseEther("0.1")
 });
 await tx.wait();
 ```
 
 ### 3. Check Token Status
+
+Trading functions use the **wrapper address** (from TokenCreated). For full metadata use `getTokenData(tokenId)` with the id from creation.
 
 ```javascript
 const stats = await diamond.getTokenStats(wrapperAddress);
@@ -140,7 +151,7 @@ console.log("Trading open:", stats.isOpen);
 
 // Check graduation status
 const graduated = await diamond.isTokenGraduated(wrapperAddress);
-console.log("Graduated to Prism-Dex(UniV3):", graduated);
+console.log("Graduated to Uniswap V3:", graduated);
 ```
 
 ### 4. Claim Creator Rewards

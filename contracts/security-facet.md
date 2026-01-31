@@ -2,7 +2,7 @@
 
 Provides security features for token launches.
 
-**Facet Address**: [`0x73c1eCcc3eD0F14A720069e0B11fe9D6492e0A17`](https://megaeth-testnet-v2.blockscout.com/address/0x73c1eCcc3eD0F14A720069e0B11fe9D6492e0A17)
+**Facet Address**: [`0x55681cfD658B4201C0079A242D3675deD847A0B9`](https://mega.etherscan.io/address/0x55681cfD658B4201C0079A242D3675deD847A0B9)
 
 ## Overview
 
@@ -158,7 +158,7 @@ function getSecurityStatus(address token) external view returns (
 Disable all security features for a token.
 
 ```solidity
-function emergencyDisableSecurity(address token) external onlyOwner
+function emergencyDisableSecurity(address _token) external onlyOwner
 ```
 
 Disables:
@@ -195,5 +195,15 @@ event FairLaunchEnabled(
 event TokenPaused(
     address indexed token,
     bool paused
+);
+```
+
+### SecurityConfigUpdated
+
+```solidity
+event SecurityConfigUpdated(
+    address indexed token,
+    bool sniperProtection,
+    bool fairLaunch
 );
 ```

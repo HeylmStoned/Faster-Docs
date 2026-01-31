@@ -1,13 +1,24 @@
 # ERC-20 Wrappers
 
-Minimal proxy wrappers that provide ERC-20 compatibility for ERC-6909 tokens.
+Minimal proxy wrappers that provide ERC-20 compatibility for ERC-6909 tokens. Managed by WrapperFacet.
+
+## TL;DR for integrators
+
+**You can interact with launchpad tokens exactly like standard ERC-20 tokens.** Each token has a **wrapper contract address** (from `TokenCreated`). Use that address everywhere you would use an ERC-20 contract:
+
+- **Wallets** – Add wrapper address as custom token; balances and history work as usual.
+- **Transfers** – `transfer(to, amount)`, `transferFrom(from, to, amount)` on the wrapper.
+- **Approvals** – `approve(spender, amount)` for DEXs, routers, or other contracts.
+- **DEXs / DeFi** – Use the wrapper address as the token in Uniswap V3, lending protocols, etc.
+
+No special handling or Diamond ABI is needed for normal token usage. The wrapper implements the full ERC-20 interface and delegates to the Diamond internally.
 
 ## Overview
 
-ERC-6909 tokens aren't directly compatible with Prism-Dex(UniV3) and other DeFi protocols. We solve this with **minimal proxy wrappers** (EIP-1167).
+ERC-6909 tokens aren't directly compatible with Uniswap V3 and other DeFi protocols. We solve this with **minimal proxy wrappers** (EIP-1167).
 
 ```
-User wants to trade on Prism-Dex(UniV3)
+User wants to trade on Uniswap V3
             │
             ▼
 ┌─────────────────────────┐
@@ -35,7 +46,7 @@ User wants to trade on Prism-Dex(UniV3)
 
 ## How It Works
 
-1. **Token Creation** - When `createToken()` is called, a wrapper is deployed automatically
+1. **Token Creation** - When `createToken()` is called, a wrapper is deployed via `wrap6909()` (token = Diamond, tokenId, initialDeposit)
 2. **Delegation** - All ERC-20 calls to the wrapper are delegated to the Diamond
 3. **Storage** - Balances and allowances stored in Diamond's ERC-6909 storage
 4. **Transfers** - Standard ERC-20 `transfer()` and `transferFrom()` work normally
@@ -62,31 +73,96 @@ function transferFrom(address from, address to, uint256 amount) external returns
 ### From Token Creation
 
 ```javascript
-const tx = await diamond.createToken(
-    "My Token", "MTK", "Description", "https://...",
-    "", "", "", ethers.parseEther("1000000000"), diamond.address
-);
+const tx = await diamond.createToken(/* ... */);
 const receipt = await tx.wait();
 
-// Parse TokenCreated event
+// TokenCreated(id, creator, name, symbol, totalSupply, wrapper)
 const event = receipt.logs.find(log => {
     try {
         return diamond.interface.parseLog(log)?.name === "TokenCreated";
     } catch { return false; }
 });
-const { wrapper } = diamond.interface.parseLog(event).args;
+const { id, wrapper } = diamond.interface.parseLog(event).args;
 ```
 
-### From Token ID
+### From Token ID (TokenFacet / ERC6909Facet)
 
 ```javascript
-const wrapper = await diamond.getWrapper(tokenId);
+const wrapper = await diamond.getTokenWrapper(tokenId);
 ```
 
 ### From Wrapper to Token ID
 
-```javascript
-const tokenId = await diamond.getTokenId(wrapperAddress);
+There is no on-chain `getTokenId(wrapper)`. Store the token `id` from the `TokenCreated` event at creation time. Alternatively, iterate `tokenCount()` and compare `getTokenWrapper(i)` to the wrapper address to find the id.
+
+## WrapperFacet
+
+**Facet Address**: [`0x13A3fe336c93662D4902183F3D5D11af4483C09E`](https://mega.etherscan.io/address/0x13A3fe336c93662D4902183F3D5D11af4483C09E)
+
+Manages wrapper deployment and ERC-20 interface. Wrappers are keyed by **(token, tokenId)** where `token` is the Diamond address for launchpad tokens.
+
+### wrap6909
+
+Deploy a wrapper for an ERC-6909 token and optionally deposit initial supply.
+
+```solidity
+function wrap6909(
+    address token,
+    uint256 tokenId,
+    uint256 initialDeposit
+) external returns (address wrapper)
+```
+
+Usually called automatically during `createToken()`.
+
+### getWrapper
+
+Get the wrapper address for a (token, tokenId) pair.
+
+```solidity
+function getWrapper(address token, uint256 tokenId) external view returns (address wrapper)
+```
+
+### predictWrapper
+
+Predict the wrapper address (CREATE2) before deployment.
+
+```solidity
+function predictWrapper(address token, uint256 tokenId) external view returns (address predicted)
+```
+
+### getImplementation
+
+Get the implementation address for wrappers.
+
+```solidity
+function getImplementation() external view returns (address implementation)
+```
+
+### setWrapperImplementation
+
+Set the wrapper implementation (owner only).
+
+```solidity
+function setWrapperImplementation(address _implementation) external
+```
+
+## Events
+
+### WrapperCreated
+
+```solidity
+event WrapperCreated(
+    address indexed token,
+    uint256 indexed tokenId,
+    address wrapper
+);
+```
+
+### ImplementationSet
+
+```solidity
+event ImplementationSet(address implementation);
 ```
 
 ## Using Wrappers
@@ -95,11 +171,11 @@ const tokenId = await diamond.getTokenId(wrapperAddress);
 
 Add the wrapper address as a custom token in MetaMask or any ERC-20 compatible wallet.
 
-### On Prism-Dex(UniV3)
+### On Uniswap V3
 
 After graduation, the wrapper address is used for the trading pair:
 - Pool: `WRAPPER_ADDRESS / WETH`
-- Trade normally via Prism-Dex(UniV3) interface
+- Trade normally via Uniswap V3 interface
 
 ### In DeFi
 
@@ -109,35 +185,11 @@ The wrapper works with any protocol expecting ERC-20:
 - Portfolio trackers
 - Block explorers
 
-## Events
+## ERC-20 Wrapper Events
 
 Wrappers emit standard ERC-20 events:
 
 ```solidity
 event Transfer(address indexed from, address indexed to, uint256 value);
 event Approval(address indexed owner, address indexed spender, uint256 value);
-```
-
-## WrapperFacet
-
-**Facet Address**: `0x8216a7e5BE75bA5FA5c28b9f3C53f2a6d6942278`
-
-Manages wrapper deployment and ERC-20 interface implementation.
-
-### deployWrapper
-
-Deploy a wrapper for an existing ERC-6909 token ID.
-
-```solidity
-function deployWrapper(uint256 tokenId) external returns (address wrapper)
-```
-
-**Note:** Usually called automatically during `createToken()`.
-
-### getWrapperImplementation
-
-Get the implementation address for wrappers.
-
-```solidity
-function getWrapperImplementation() external view returns (address)
 ```

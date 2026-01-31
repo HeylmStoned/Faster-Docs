@@ -2,7 +2,7 @@
 
 Manages all fee collection and distribution.
 
-**Facet Address**: [`0xE75A6cdDc836f4dB8aA1794B05e6545b89c774Bb`](https://megaeth-testnet-v2.blockscout.com/address/0xE75A6cdDc836f4dB8aA1794B05e6545b89c774Bb)
+**Facet Address**: [`0x742c3b5E9201b18CbC370e2D069c25D68221D7A4`](https://mega.etherscan.io/address/0x742c3b5E9201b18CbC370e2D069c25D68221D7A4)
 
 ## Overview
 
@@ -103,7 +103,7 @@ function getPlatformStats() external view returns (
 ### getFeeBreakdown
 
 ```solidity
-function getFeeBreakdown(address token) external view returns (
+function getFeeBreakdown(address _token) external view returns (
     uint256 platformFee,
     uint256 creatorFee,
     uint256 badBunnzFee,
@@ -111,6 +111,8 @@ function getFeeBreakdown(address token) external view returns (
     uint256 totalFee
 )
 ```
+
+`_token` is the token wrapper address.
 
 ---
 
@@ -134,11 +136,19 @@ function withdrawBadBunnzFees(uint256 amount) external onlyOwner
 function withdrawBuybackFees(uint256 amount) external onlyOwner
 ```
 
-### setFeeWallets
+### withdrawGraduationFees
 
 ```solidity
-function setFeeWallets(address platform, address buyback) external onlyOwner
+function withdrawGraduationFees(uint256 amount) external onlyOwner
 ```
+
+### setFeeWallets (AdminFacet)
+
+```solidity
+function setFeeWallets(address _platformWallet, address _buybackWallet) external onlyOwner
+```
+
+Callable via Diamond; implemented on AdminFacet.
 
 ---
 
@@ -170,4 +180,10 @@ event CreatorRewardsClaimed(
 
 ```solidity
 event PlatformFeesWithdrawn(uint256 amount);
+```
+
+### GraduationFeesWithdrawn
+
+```solidity
+event GraduationFeesWithdrawn(uint256 amount);
 ```
