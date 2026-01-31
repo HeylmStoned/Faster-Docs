@@ -38,7 +38,7 @@ Traditional Approach:              Our Approach:
 ERC-6909 tokens aren't directly compatible with Prism-Dex(UniV3) and other DeFi protocols. We solve this with **minimal proxy wrappers** (EIP-1167):
 
 ```
-User wants to trade on Uniswap V3 onm Prism
+User wants to trade on Uniswap V3 on Prism
             │
             ▼
 ┌─────────────────────────┐
@@ -79,7 +79,7 @@ Each wrapper is only ~45 bytes of bytecode (vs ~5KB for a full ERC-20). **For us
 | **DiamondLoupeFacet** | Introspection (query facets, selectors) |
 | **TokenFacet** | Token creation, ERC-6909 transfers, metadata |
 | **TradingFacet** | Bonding curve buy/sell, price calculations |
-| **GraduationFacet** | Uniswap V3 onm Prism pool creation, LP fee collection |
+| **GraduationFacet** | Uniswap V3 on Prism pool creation, LP fee collection |
 | **FeeFacet** | Fee distribution, creator rewards, withdrawals |
 | **SecurityFacet** | Anti-sniper protection, fair launch limits |
 | **AdminFacet** | Owner controls, emergency functions |
@@ -114,14 +114,14 @@ Triggered automatically when 30 ETH raised or 684k tokens sold:
 2. 0.1 ETH graduation fee deducted
 3. Calculate tokens needed for DEX to match final BC price (~316k tokens)
 4. Burn excess tokens to dead address (maintains price continuity)
-5. Create Uniswap V3 onm Prism pool with ~316k tokens + ~29.9 ETH
+5. Create Uniswap V3 on Prism pool with ~316k tokens + ~29.9 ETH
 6. Full-range liquidity position minted at 0.3% fee tier
 7. Position NFT held by Diamond contract (liquidity locked forever)
 8. Token wrapper now tradeable on DEX at same price as final BC price (~0.03% difference)
 
 ### Phase 4: DEX Trading
 
-- Token trades freely on Uniswap V3 onm Prism - no restrictions
+- Token trades freely on Uniswap V3 on Prism - no restrictions
 - LP fees accumulate in the position
 - Anyone can call `collectFees(token)` to harvest LP fees
 - Fees auto-distribute: 20% platform (fixed), 80% adjustable (default: 50% creator, 25% Bad Bunnz, 25% buyback)
@@ -130,7 +130,7 @@ Triggered automatically when 30 ETH raised or 684k tokens sold:
 ## Contract Interactions
 
 ```
-User                    Diamond                         Uniswap V3 onm Prism
+User                    Diamond                         Uniswap V3 on Prism
  │                        │                                   │
  │── createToken() ──────►│                                   │
  │◄── (tokenId, wrapper) ─│                                   │
@@ -168,7 +168,7 @@ User buys/sells
 
 ### DEX LP Fees
 ```
-Trades on Uniswap V3 onm Prism
+Trades on Uniswap V3 on Prism
       │
       ▼
 Anyone calls collectFees(token)

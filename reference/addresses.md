@@ -38,7 +38,7 @@ All interactions go through the Diamond address above.
 | DiamondInit | [`0xa5545233977626E15492267452f8e2d9868bF427`](https://mega.etherscan.io/address/0xa5545233977626E15492267452f8e2d9868bF427) |
 | WrapperImplementation | [`0xE59DB204919454895f8815e7EF57BA6bC1b6EAf2`](https://mega.etherscan.io/address/0xE59DB204919454895f8815e7EF57BA6bC1b6EAf2) |
 
-### External Dependencies (Uniswap V3 onm Prism)
+### External Dependencies (Uniswap V3 on Prism)
 
 | Contract | Address |
 |----------|---------|
@@ -70,12 +70,14 @@ const provider = new ethers.JsonRpcProvider("https://mainnet.megaeth.com/rpc");
 
 ## Contract ABIs
 
-ABIs are included in this repo under **`abis/`** (only what third parties need):
+ABIs are in the **GitHub repo** under `abis/` (only what third parties need). If you're reading this on GitBook, get the files from GitHub:
 
-| File | Description |
-|------|--------------|
-| `abis/Diamond.json` | **Public/integration ABI** – token creation, trading (buy/sell), graduation, fee claims, token data, ERC-6909, wrapper lookup. Excludes admin, security, and upgrade functions. |
-| `abis/ERC20.json` | Standard ERC-20 ABI for interacting with token wrappers (balance, transfer, approve). |
+| File | Description | Get it |
+|------|--------------|--------|
+| Diamond.json | **Public/integration ABI** – token creation, trading (buy/sell), graduation, fee claims, token data, ERC-6909, wrapper lookup. Excludes admin, security, and upgrade functions. | [Download](https://raw.githubusercontent.com/HeylmStoned/Faster-Docs/main/abis/Diamond.json) |
+| ERC20.json | Standard ERC-20 ABI for token wrappers (balance, transfer, approve). | [Download](https://raw.githubusercontent.com/HeylmStoned/Faster-Docs/main/abis/ERC20.json) |
+
+Or clone the repo: `git clone https://github.com/HeylmStoned/Faster-Docs.git` and use the files in `abis/`.
 
 ### Usage
 

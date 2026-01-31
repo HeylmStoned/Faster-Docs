@@ -279,7 +279,7 @@ async function checkGraduation(wrapperAddress) {
     
     if (graduated) {
         const status = await diamond.getGraduationStatus(wrapperAddress);
-        console.log("=== Graduated to Uniswap V3 onm Prism ===");
+        console.log("=== Graduated to Uniswap V3 on Prism ===");
         console.log("Pool:", status.pool);
         console.log("Position ID:", status.positionId.toString());
         console.log("Liquidity:", status.liquidity.toString());
@@ -398,7 +398,7 @@ diamond.on("TokenSold", (token, seller, amount, price) => {
 
 // Listen for graduations (token, pool, positionId)
 diamond.on("TokenGraduated", (token, pool, positionId) => {
-    console.log(`Token graduated to Uniswap V3 onm Prism!`);
+    console.log(`Token graduated to Uniswap V3 on Prism!`);
     console.log(`  Token: ${token}`);
     console.log(`  Pool: ${pool}`);
 });
@@ -425,7 +425,7 @@ async function safeBuy(wrapperAddress, ethAmount) {
         await tx.wait();
     } catch (error) {
         if (error.message.includes("Trading is closed")) {
-            console.log("Token has graduated to Uniswap V3 onm Prism");
+            console.log("Token has graduated to Uniswap V3 on Prism");
         } else if (error.message.includes("Output below minimum")) {
             console.log("Slippage too high, try again");
         } else if (error.message.includes("Exceeds max buy amount")) {

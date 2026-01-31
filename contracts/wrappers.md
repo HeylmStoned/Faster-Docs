@@ -9,16 +9,16 @@ Minimal proxy wrappers that provide ERC-20 compatibility for ERC-6909 tokens. Ma
 - **Wallets** – Add wrapper address as custom token; balances and history work as usual.
 - **Transfers** – `transfer(to, amount)`, `transferFrom(from, to, amount)` on the wrapper.
 - **Approvals** – `approve(spender, amount)` for DEXs, routers, or other contracts.
-- **DEXs / DeFi** – Use the wrapper address as the token in Uniswap V3 onm Prism, lending protocols, etc.
+- **DEXs / DeFi** – Use the wrapper address as the token in Uniswap V3 on Prism, lending protocols, etc.
 
 No special handling or Diamond ABI is needed for normal token usage. The wrapper implements the full ERC-20 interface and delegates to the Diamond internally.
 
 ## Overview
 
-ERC-6909 tokens aren't directly compatible with Uniswap V3 onm Prism and other DeFi protocols. We solve this with **minimal proxy wrappers** (EIP-1167).
+ERC-6909 tokens aren't directly compatible with Uniswap V3 on Prism and other DeFi protocols. We solve this with **minimal proxy wrappers** (EIP-1167).
 
 ```
-User wants to trade on Uniswap V3 onm Prism
+User wants to trade on Uniswap V3 on Prism
             │
             ▼
 ┌─────────────────────────┐
@@ -171,11 +171,11 @@ event ImplementationSet(address implementation);
 
 Add the wrapper address as a custom token in MetaMask or any ERC-20 compatible wallet.
 
-### On Uniswap V3 onm Prism
+### On Uniswap V3 on Prism
 
 After graduation, the wrapper address is used for the trading pair:
 - Pool: `WRAPPER_ADDRESS / WETH`
-- Trade normally via Uniswap V3 onm Prism interface
+- Trade normally via Uniswap V3 on Prism interface
 
 ### In DeFi
 

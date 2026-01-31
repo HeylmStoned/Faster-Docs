@@ -25,7 +25,7 @@ const addresses = {
     // Main entry point - all calls go through Diamond
     diamond: "0xabFf1341b5aF1D71394D44ad84E07d02ab3fbd4B",
     
-    // External dependencies (Uniswap V3 onm Prism)
+    // External dependencies (Uniswap V3 on Prism)
     uniswapV3Factory: "0xef349aa6cc5e87559e716ac293845a48cadf30d5",
     positionManager: "0x9feaf944c518164d5d0c45f28255758acff8e987",
     weth: "0x4200000000000000000000000000000000000006"
@@ -55,7 +55,7 @@ const diamond = new ethers.Contract(addresses.diamond, DIAMOND_ABI, wallet);
 
 ## ABIs
 
-ABIs are in this repo under **`abis/`**: use `abis/Diamond.json` for the Diamond (all launchpad functions) and `abis/ERC20.json` for wrapper tokens (balance, transfer, approve).
+Get the ABIs from the **GitHub repo**: [Diamond.json](https://raw.githubusercontent.com/HeylmStoned/Faster-Docs/main/abis/Diamond.json) (launchpad) and [ERC20.json](https://raw.githubusercontent.com/HeylmStoned/Faster-Docs/main/abis/ERC20.json) (wrappers). Download and point your code at them, or clone the repo and use the `abis/` folder.
 
 ## Wrapper address = your token address
 
@@ -67,7 +67,7 @@ Each launchpad token has a **wrapper** address (returned in `TokenCreated`). **U
 | Check balance | `wrapper.balanceOf(user)` (standard ERC-20) |
 | Transfer | `wrapper.transfer(to, amount)` or `wrapper.transferFrom(from, to, amount)` |
 | Approve (e.g. for DEX) | `wrapper.approve(spender, amount)` |
-| Trade on Uniswap V3 onm Prism | Use wrapper address as the token in the pair |
+| Trade on Uniswap V3 on Prism | Use wrapper address as the token in the pair |
 
 For **launchpad-specific** actions (buy/sell on bonding curve, graduation, fees, rewards), call the **Diamond** with the wrapper address as the `token` parameter. See [ERC-20 Wrappers](../contracts/wrappers.md) for the full picture.
 
@@ -151,7 +151,7 @@ console.log("Trading open:", stats.isOpen);
 
 // Check graduation status
 const graduated = await diamond.isTokenGraduated(wrapperAddress);
-console.log("Graduated to Uniswap V3 onm Prism:", graduated);
+console.log("Graduated to Uniswap V3 on Prism:", graduated);
 ```
 
 ### 4. Claim Creator Rewards
