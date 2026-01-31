@@ -1,20 +1,20 @@
 # GraduationFacet
 
-Graduates tokens from bonding curve to Uniswap V3.
+Graduates tokens from bonding curve to Uniswap V3 onm Prism.
 
 **Facet Address**: [`0xe0955cB7Eb76aa7F5a070B8b2cE60fF93000821C`](https://mega.etherscan.io/address/0xe0955cB7Eb76aa7F5a070B8b2cE60fF93000821C)
 
 ## Overview
 
 GraduationFacet handles:
-- Creating Uniswap V3 pools
+- Creating Uniswap V3 onm Prism pools
 - Adding initial liquidity
 - Managing LP positions
 - Collecting and distributing LP fees
 
 **All functions that take a `token` parameter expect the ERC-20 wrapper address** (from `TokenCreated`).
 
-## Uniswap V3 Configuration
+## Uniswap V3 onm Prism Configuration
 
 | Setting | Value |
 |---------|-------|
@@ -43,7 +43,7 @@ When 30 ETH raised OR 684k tokens sold:
 2. **Fee Deducted** - 0.1 ETH graduation fee taken
 3. **Calculate DEX Tokens** - Tokens needed to match final BC price (~316k)
 4. **Burn Excess** - Remaining tokens burned to `0x...dEaD` (only if >1% of remaining)
-5. **Pool Created** - Uniswap V3 pool initialized with ~316k tokens + ~29.9 ETH
+5. **Pool Created** - Uniswap V3 onm Prism pool initialized with ~316k tokens + ~29.9 ETH
 6. **Liquidity Minted** - Full-range position created at 0.3% fee tier
 7. **Position Locked** - NFT held by Diamond contract (non-withdrawable)
 
@@ -51,7 +51,7 @@ When 30 ETH raised OR 684k tokens sold:
 
 ### graduate
 
-Graduate token to Uniswap V3. Usually auto-called when target met.
+Graduate token to Uniswap V3 onm Prism. Usually auto-called when target met.
 
 ```solidity
 function graduate(address token) external returns (address pool, uint256 positionId)
@@ -62,7 +62,7 @@ function graduate(address token) external returns (address pool, uint256 positio
 - Token must not already be graduated
 
 **Returns:**
-- `pool` - Uniswap V3 pool address
+- `pool` - Uniswap V3 onm Prism pool address
 - `positionId` - NFT position ID
 
 ---

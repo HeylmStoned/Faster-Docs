@@ -25,7 +25,7 @@ A gas-efficient memecoin launchpad built on the EIP-2535 Diamond Standard with E
 - **ERC-6909 Multi-Token Standard** - All tokens exist within a single Diamond contract
 - **ERC-20 Wrappers** - Each token gets a compatible ERC-20 address via minimal proxy
 - **Bonding Curve Trading** - x^1.5 price curve with 1.2% trading fee
-- **Auto-Graduation** - Tokens graduate to Uniswap V3 when 30 ETH raised
+- **Auto-Graduation** - Tokens graduate to Uniswap V3 onm Prism when 30 ETH raised
 - **90%+ Gas Savings** - ~50k gas to create a token vs 1-2M traditional
 - **Price Continuity** - DEX opens at same price as final bonding curve (~0.03% difference)
 
@@ -36,7 +36,7 @@ A gas-efficient memecoin launchpad built on the EIP-2535 Diamond Standard with E
 - **Wallets** – Add the wrapper address as a custom token (e.g. MetaMask). Balances and transfers work like any ERC-20.
 - **Transfers** – Use `transfer(to, amount)` and `transferFrom(from, to, amount)` on the wrapper contract. No Diamond calls needed for simple sends.
 - **Approvals** – Use `approve(spender, amount)` on the wrapper for DEXs, vaults, or other protocols.
-- **DEXs / DeFi** – After graduation, use the wrapper address as the token in Uniswap V3 or any ERC-20–compatible protocol.
+- **DEXs / DeFi** – After graduation, use the wrapper address as the token in Uniswap V3 onm Prism or any ERC-20–compatible protocol.
 
 No special SDK or Diamond ABI is required for day-to-day token use. Use the Diamond only for launchpad actions (create, buy/sell on bonding curve, graduate, collect fees, claim rewards). See [ERC-20 Wrappers](contracts/wrappers.md) for details.
 

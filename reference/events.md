@@ -167,7 +167,7 @@ event GraduationFailed(
 
 ### TokenGraduated
 
-Emitted when a token graduates to Uniswap V3.
+Emitted when a token graduates to Uniswap V3 onm Prism.
 
 ```solidity
 event TokenGraduated(
@@ -190,7 +190,7 @@ event PositionCreated(
 
 ### PoolCreated
 
-Emitted when a Uniswap V3 pool is created.
+Emitted when a Uniswap V3 onm Prism pool is created.
 
 ```solidity
 event PoolCreated(
@@ -201,7 +201,7 @@ event PoolCreated(
 
 ### FeesCollected
 
-Emitted when LP fees are collected from Uniswap V3.
+Emitted when LP fees are collected from Uniswap V3 onm Prism.
 
 ```solidity
 event FeesCollected(
@@ -454,7 +454,7 @@ diamond.on("TokenSold", (token, seller, amount, price) => {
 
 // Listen for graduations
 diamond.on("TokenGraduated", (token, pool, positionId) => {
-    console.log(`Token graduated to Uniswap V3!`);
+    console.log(`Token graduated to Uniswap V3 onm Prism!`);
     console.log(`  Pool: ${pool}`);
 });
 

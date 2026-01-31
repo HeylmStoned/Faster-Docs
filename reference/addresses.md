@@ -38,7 +38,7 @@ All interactions go through the Diamond address above.
 | DiamondInit | [`0xa5545233977626E15492267452f8e2d9868bF427`](https://mega.etherscan.io/address/0xa5545233977626E15492267452f8e2d9868bF427) |
 | WrapperImplementation | [`0xE59DB204919454895f8815e7EF57BA6bC1b6EAf2`](https://mega.etherscan.io/address/0xE59DB204919454895f8815e7EF57BA6bC1b6EAf2) |
 
-### External Dependencies (Uniswap V3)
+### External Dependencies (Uniswap V3 onm Prism)
 
 | Contract | Address |
 |----------|---------|
